@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tarzan F.C.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark .card,
+        body.dark .menu-lateral,
+        body.dark .config-painel,
+        body.dark .secao {
+            background: #2a2a2a;
+            color: #ddd;
+            border-color: #444;
+        }
+
+        body.dark a,
+        body.dark .link-text {
+            color: #8eff8e;
+        }
+
+        body.dark header {
+            background: #0f0f0f;
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark .hamburger span {
+            background: #eee;
+        }
+
+        body.dark input,
+        body.dark textarea,
+        body.dark select {
+            background: #333;
+            color: #eee;
+            border-color: #555;
+        }
+
+        body.dark .rodape {
+            background: #111;
+            border-top: 1px solid #333;
+        }
+
+        body.dark .contrato-box {
+            background: #1a1a1a;
+            color: #ccc;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: #000;
+            border-bottom: 2px solid #00ff00;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .logo-tarzan {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-tarzan img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .logo-tarzan h1 {
+            font-size: 1.5rem;
+            color: #00ff00;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: #1a1a1a;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: #00ff00;
+            border-radius: 3px;
+            transition: 0.2s;
+        }
+
+        .hamburger:hover {
+            background: #2a2a2a;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #0d0d0d;
+            color: #eee;
+            padding: 80px 20px 30px;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.7);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            border-left: 2px solid #00ff00;
+        }
+
+        .menu-lateral.aberto {
+            right: 0;
+        }
+
+        .menu-lateral .fechar {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 2rem;
+            color: #00ff00;
+            cursor: pointer;
+        }
+
+        .menu-lateral ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-lateral li {
+            padding: 14px 10px;
+            border-bottom: 1px solid #2a2a2a;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .menu-lateral li:hover {
+            background: #1f1f1f;
+            color: #00ff00;
+        }
+
+        .menu-lateral li i {
+            width: 24px;
+            color: #00ff00;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.ativo {
+            display: block;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .secao {
+            display: none;
+            animation: fade 0.2s ease;
+            background: #fff;
+            padding: 25px 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .secao.ativa {
+            display: block;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.3;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .secao h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: #00aa00;
+            border-left: 6px solid #00ff00;
+            padding-left: 14px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin: 16px 0;
+        }
+
+        .card {
+            background: #fafafa;
+            border-radius: 14px;
+            padding: 18px 16px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn {
+            display: inline-block;
+            background: #00cc00;
+            color: #000;
+            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #00e600;
+            transform: scale(1.02);
+        }
+
+        .btn-sec {
+            background: #222;
+            color: #eee;
+        }
+
+        .btn-sec:hover {
+            background: #333;
+        }
+
+        .btn-danger {
+            background: #cc0000;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #ee0000;
+        }
+
+        .btn-criar {
+            background: #0066cc;
+            color: #fff;
+        }
+
+        .btn-criar:hover {
+            background: #0077ee;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin: 8px 0;
+            background: #fff;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .link-text {
+            color: #007700;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .link-text:hover {
+            color: #00cc00;
+        }
+
+        .rodape {
+            background: #000;
+            color: #aaa;
+            padding: 30px 20px 20px;
+            margin-top: 30px;
+            border-top: 2px solid #00ff00;
+            text-align: center;
+        }
+
+        .rodape input {
+            max-width: 360px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #eee;
+            border-radius: 40px;
+            padding: 10px 18px;
+        }
+
+        .rodape .btn {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 20px;
+        }
+
+        .mb-2 {
+            margin-bottom: 20px;
+        }
+
+        .config-painel {
+            background: #f9f9f9;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+        }
+
+        .config-painel h4 {
+            margin: 12px 0 6px;
+            color: #00aa00;
+        }
+
+        .contrato-box {
+            background: #0f0f0f;
+            color: #d0d0d0;
+            padding: 20px;
+            border-radius: 14px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            border: 1px solid #00ff0055;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .contrato-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .contrato-box::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 8px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #00cc00;
+            color: #000;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        #statusLogin,
+        #statusContato,
+        #statusContrato,
+        #statusAudio,
+        #statusCompra,
+        #statusCriarConta {
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        .usuario-logado {
+            color: #00ff00;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid #00ff0033;
+            margin: 20px 0;
+        }
+
+        @media (min-width: 640px) {
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Menu lateral -->
+    <nav class="menu-lateral" id="menuLateral">
+        <span class="fechar" id="fecharMenu">&times;</span>
+        <ul>
+            <li data-secao="noticias"><i class="fas fa-newspaper"></i> Notícias</li>
+            <li data-secao="tabela"><i class="fas fa-calendar-alt"></i> Tabela de jogos</li>
+            <li data-secao="vencimento"><i class="fas fa-trophy"></i> Vencimento</li>
+            <li data-secao="ingressos"><i class="fas fa-ticket-alt"></i> Ingressos</li>
+            <li data-secao="login"><i class="fas fa-sign-in-alt"></i> Login</li>
+            <li data-secao="configuracoes"><i class="fas fa-cog"></i> Configurações</li>
+            <li data-secao="contato"><i class="fas fa-envelope"></i> Contate-nos</li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-tarzan">
+            <img src="https://cdn.imageurlgenerator.com/uploads/104c753a-472c-4126-962a-773702033d5d.jpg" alt="Tarzan FC">
+            <h1>Tarzan F.C. <span id="usuarioHeader" class="usuario-logado"></span></h1>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <div class="container" id="mainContainer">
+
+        <!-- NOTÍCIAS -->
+        <section id="noticias" class="secao ativa">
+            <h2><i class="fas fa-newspaper"></i> Notícias</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🏆 Tarzan vence o rival</h3>
+                    <p>Em um jogo emocionante, o Tarzan F.C. venceu o time da escola por 3x2. Destaque para o goleiro que defendeu pênalti.</p>
+                </div>
+                <div class="card">
+                    <h3>⚽ Novos talentos</h3>
+                    <p>A peneira para novos jogadores será no próximo sábado. Traga sua coxinha e mostre seu valor.</p>
+                </div>
+                <div class="card">
+                    <h3>📢 Ingressos esgotados?</h3>
+                    <p>Os ingressos para o jogo contra o time do bairro estão acabando. Garanta o seu gritando "Flamengo".</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABELA -->
+        <section id="tabela" class="secao">
+            <h2><i class="fas fa-calendar-alt"></i> Tabela de jogos</h2>
+            <div class="card">
+                <p><strong>15/05</strong> - Tarzan FC vs. Unidos do Morro - 15h</p>
+                <p><strong>22/05</strong> - Tarzan FC vs. Vila Nova - 16h</p>
+                <p><strong>29/05</strong> - Tarzan FC vs. Real Escola - 14h</p>
+                <p><strong>05/06</strong> - Tarzan FC vs. Os Bagres - 15h30</p>
+            </div>
+        </section>
+
+        <!-- VENCIMENTO -->
+        <section id="vencimento" class="secao">
+            <h2><i class="fas fa-trophy"></i> Quadro de títulos</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🏅 2023</h3>
+                    <p>Campeão do Interclasse</p>
+                </div>
+                <div class="card">
+                    <h3>🏅 2022</h3>
+                    <p>Vice-campeão da Liga Escolar</p>
+                </div>
+                <div class="card">
+                    <h3>🏅 2021</h3>
+                    <p>Campeão do Torneio da Amizade</p>
+                </div>
+                <div class="card">
+                    <h3>🏅 2020</h3>
+                    <p>Melhor time do bairro</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INGRESSOS -->
+        <section id="ingressos" class="secao">
+            <h2><i class="fas fa-ticket-alt"></i> Comprar ingresso</h2>
+            <div class="card">
+                <p><strong>Ingresso para o próximo jogo:</strong> R$ 0,00 (pague com sua voz)</p>
+                <div class="flex-row">
+                    <button class="btn" id="btnComprarIngresso">Comprar</button>
+                </div>
+                <div id="areaCompra" class="mt-2 oculto">
+                    <label>Seu nome ou e-mail:</label>
+                    <input type="text" id="nomeComprador" placeholder="Ex: Thales">
+                    <p>Escolha o pagamento:</p>
+                    <div class="flex-row">
+                        <button class="btn btn-sec" data-pagamento="flamengo">Gritar FLAMENGO 20s</button>
+                        <button class="btn btn-sec" data-pagamento="balinha">Balinha</button>
+                    </div>
+                    <div id="pagamentoDetalhe" class="mt-2"></div>
+                    <p id="statusCompra" class="mt-2"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOGIN / CRIAR CONTA -->
+        <section id="login" class="secao">
+            <h2><i class="fas fa-sign-in-alt"></i> Login / Criar Conta</h2>
+            <div class="card">
+                <!-- Login -->
+                <h3>🔐 Login</h3>
+                <input type="email" id="emailLogin" placeholder="Seu e-mail">
+                <input type="password" id="senhaLogin" placeholder="Sua senha">
+                <div class="flex-row">
+                    <button class="btn" id="btnLogin">Entrar</button>
+                    <button class="btn btn-sec" id="btnLogout" style="display:none;">Sair</button>
+                </div>
+                <p id="statusLogin" class="mt-2"></p>
+
+                <hr class="divider">
+
+                <!-- Criar Conta -->
+                <h3>📝 Criar Conta</h3>
+                <input type="email" id="emailCriar" placeholder="Seu e-mail">
+                <input type="password" id="senhaCriar" placeholder="Sua senha">
+                <input type="password" id="senhaCriarConfirm" placeholder="Confirmar senha">
+                <button class="btn btn-criar" id="btnCriarConta">Criar Conta</button>
+                <p id="statusCriarConta" class="mt-2"></p>
+
+                <p><small>🔐 Qualquer e-mail/senha funciona (simulação).</small></p>
+            </div>
+        </section>
+
+        <!-- CONFIGURAÇÕES -->
+        <section id="configuracoes" class="secao">
+            <h2><i class="fas fa-cog"></i> Configurações</h2>
+            <div class="config-painel">
+                <h4>1. Geral</h4>
+                <label><input type="checkbox" id="modoEscuro"> Ativar modo escuro</label>
+                <p>
+                    <button class="link-text" data-secao="contato">Suporte</button> |
+                    <button class="link-text" data-secao="contato">Contate-nos</button>
+                </p>
+
+                <h4>2. Termos</h4>
+                <p><button class="link-text" data-secao="termos">Termos e condições</button></p>
+                <p><button class="link-text" data-secao="privacidade">Políticas de privacidade</button></p>
+                <p><button class="link-text" data-secao="compra-politica">Políticas de compra</button></p>
+                <p><button class="link-text" data-secao="sobre">Sobre Nós</button></p>
+                <p><button class="link-text" id="btnRegrasTime">2.5 Regras do time</button></p>
+
+                <h4>3. História</h4>
+                <p><button class="link-text" data-secao="historia-completa">História completa</button></p>
+            </div>
+
+            <!-- Regras do time -->
+            <div id="regrasTimeContainer" class="oculto mt-2">
+                <h3>Regras do time</h3>
+                <div class="card">
+                    <p>1. Respeitar o Thales.</p>
+                    <p>2. Nunca perder a coxinha.</p>
+                    <p>3. Gritar "Flamengo" antes de cada jogo.</p>
+                    <p>4. Não chamar o Thales de bagre.</p>
+                    <p>5. Treinar sempre que possível.</p>
+                    <p>6. Se divertir acima de tudo.</p>
+                    <p>7. Não processar o time.</p>
+                    <p>8. Aceitar que o Thales é o craque.</p>
+                    <p>9. Comparecer aos treinos.</p>
+                    <p>10. Comemorar gols com dança do pombo.</p>
+                    <div style="height: 60px;"></div>
+                    <p><button class="link-text" id="btnSaibaMaisVagas">Saiba mais sobre vagas e jogadores</button></p>
+                </div>
+            </div>
+
+            <!-- Texto sobre vagas -->
+            <div id="textoVagas" class="oculto mt-2 card">
+                <p>O Tarzan FC está sempre em busca de novos talentos. Oferecemos vagas para zagueiro, goleiro, atacante e treinador. Os salários são uma coxinha e uma coca.</p>
+                <p>Os jogadores passam por uma peneira e depois assinam um contrato. E por fim, assinam o contrato. <button class="link-text" id="btnTerVaga">Ter Vaga.</button></p>
+            </div>
+
+            <!-- Seção secreta -->
+            <div id="secaoSecreta" class="oculto text-center mt-2">
+                <h2>Quer trabalhar no time?</h2>
+                <button class="btn" id="btnQuero">Quero.</button>
+            </div>
+
+            <!-- Etapa 1: Selecionar vaga -->
+            <div id="etapaVaga" class="oculto mt-2 card">
+                <h3>Etapa 1: Selecione sua vaga</h3>
+                <div class="flex-row">
+                    <button class="btn btn-sec" data-vaga="zagueiro">Zagueiro</button>
+                    <button class="btn btn-sec" data-vaga="goleiro">Goleiro</button>
+                    <button class="btn btn-sec" data-vaga="atacante">Atacante</button>
+                    <button class="btn btn-sec" data-vaga="treinador">Treinador</button>
+                </div>
+            </div>
+
+            <!-- Etapa 2: Peneira (Google Forms) -->
+            <div id="etapaPeneira" class="oculto mt-2 card">
+                <h3>Etapa 2: Peneira</h3>
+                <p>Preencha o formulário abaixo:</p>
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfW2DLnEKzfjIbhccmnIWfNr0tde6-DmVuqldRqYse6nIhfsA/viewform?usp=publish-editor" width="100%" height="500" style="border:1px solid #ccc; border-radius:12px;"></iframe>
+                <p><button class="btn" id="btnProximoContrato">Próximo → Contrato</button></p>
+            </div>
+
+            <!-- Etapa 3: Contrato -->
+            <div id="etapaContrato" class="oculto mt-2">
+                <h3>Contrato</h3>
+                <div id="contratoExibicao" class="contrato-box"></div>
+                <p><button class="btn" id="btnAssinarContrato">Assinar contrato</button></p>
+                <p id="statusContrato"></p>
+            </div>
+        </section>
+
+        <!-- CONTATO -->
+        <section id="contato" class="secao">
+            <h2><i class="fas fa-envelope"></i> Contate-nos</h2>
+            <div class="card">
+                <input type="text" id="contatoNome" placeholder="Seu nome">
+                <input type="email" id="contatoEmail" placeholder="Seu e-mail">
+                <textarea id="contatoMsg" rows="4" placeholder="Sua mensagem"></textarea>
+                <button class="btn" id="btnEnviarContato">Enviar</button>
+                <p id="statusContato"></p>
+            </div>
+        </section>
+
+        <!-- Termos -->
+        <section id="termos" class="secao">
+            <h2>Termos e Condições</h2>
+            <div class="card">
+                <p><strong>TERMOS E CONDIÇÕES DO TARZAN FC</strong></p>
+                <p>1. Aceitação: ao acessar, concorda que o Thales é o melhor.</p>
+                <p>2. Cadastro: salário = coxinha + coca.</p>
+                <p>3. Ingressos: pague gritando Flamengo 20s.</p>
+                <p>4. Direitos: você pode reclamar do árbitro.</p>
+                <p>5. Deveres: não processar o time.</p>
+                <p>6. Propriedade intelectual: o meme é nosso.</p>
+                <p>7. Limitação: não nos responsabilizamos por coxinhas frias.</p>
+                <p>8. Disposições finais: sem validade jurídica.</p>
+                <p><em>VAI TARZAN FC! 🦍⚽</em></p>
+            </div>
+        </section>
+
+        <!-- Privacidade -->
+        <section id="privacidade" class="secao">
+            <h2>Política de Privacidade</h2>
+            <div class="card">
+                <p><strong>POLÍTICA DE PRIVACIDADE DO TARZAN FC</strong></p>
+                <p>Dados coletados: nome, endereço, CEP.</p>
+                <p>Usamos cookies para lembrar que você já gritou "Flamengo".</p>
+                <p>Compartilhamos com: Thales, tia da cantina e porteiro.</p>
+                <p>Segurança: bloco de notas do Thales.</p>
+                <p>Seus direitos: falar com o Thales.</p>
+                <p><em>COM COOKIES - O THALES ESTAVA ERRADO</em></p>
+            </div>
+        </section>
+
+        <!-- Política de Compra -->
+        <section id="compra-politica" class="secao">
+            <h2>Política de Compra</h2>
+            <div class="card">
+                <p><strong>POLÍTICA DE COMPRA DE INGRESSOS</strong></p>
+                <p>O que você está comprando: ingresso para ver o Tarzan FC.</p>
+                <p>Formas de pagamento: gritar Flamengo 20s (presencial ou áudio).</p>
+                <p>Não aceitamos PIX/cartão.</p>
+                <p>Reembolso: não há.</p>
+                <p>Validade: apenas para o jogo comprado.</p>
+                <p><em>Tarzan FC – o time do Thales</em></p>
+            </div>
+        </section>
+
+        <!-- Sobre -->
+        <section id="sobre" class="secao">
+            <h2>Sobre Nós</h2>
+            <div class="card">
+                <p>Tarzan FC - o time do Thales.</p>
+                <p>Fundado em 2020 na quadra da escola.</p>
+                <p>Valores: coxinha, amizade e zoação.</p>
+                <p>Nosso lema: "VAI TARZAN! 🦍⚽"</p>
+            </div>
+        </section>
+
+        <!-- História completa -->
+        <section id="historia-completa" class="secao">
+            <h2>História completa</h2>
+            <div class="card">
+                <p>O Tarzan FC começou na quadra da escola. Thales, o fundador, sempre sonhou em ter um time.</p>
+                <p>O primeiro jogo foi contra a turma do 9º ano. Perdemos de 5x0, mas foi épico.</p>
+                <p>Hoje, somos uma família. Temos títulos, risadas e muitas coxinhas.</p>
+                <p>E o Thales continua perdendo gols debaixo da trave.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="rodape">
+        <p>Inscreva-se para receber notícias</p>
+        <div class="flex-row" style="justify-content:center;">
+            <input type="email" id="emailNews" placeholder="Seu e-mail">
+            <button class="btn" id="btnNews">Inscrever</button>
+        </div>
+        <p style="margin-top:16px; font-size:0.8rem;">&copy; 2025 Tarzan F.C. - O time do Thales</p>
+    </footer>
+
+    <script>
+        // Inicializar EmailJS
+        emailjs.init({
+            publicKey: "osq9QDWHrz6LbiaGM"
+        });
+
+        // ============================================================
+        // 1. MENU HAMBÚRGUER
+        // ============================================================
+        const menu = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+        const hamburger = document.getElementById('hamburger');
+        const fechar = document.getElementById('fecharMenu');
+
+        function abrirMenu() {
+            menu.classList.add('aberto');
+            overlay.classList.add('ativo');
+        }
+
+        function fecharMenu() {
+            menu.classList.remove('aberto');
+            overlay.classList.remove('ativo');
+        }
+
+        hamburger.addEventListener('click', abrirMenu);
+        fechar.addEventListener('click', fecharMenu);
+        overlay.addEventListener('click', fecharMenu);
+
+        document.querySelectorAll('.menu-lateral li[data-secao]').forEach(item => {
+            item.addEventListener('click', function() {
+                const secao = this.dataset.secao;
+                mostrarSecao(secao);
+                fecharMenu();
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const el = e.target.closest('[data-secao]');
+            if (el && el.dataset.secao) {
+                e.preventDefault();
+                mostrarSecao(el.dataset.secao);
+            }
+        });
+
+        function mostrarSecao(id) {
+            document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+            const alvo = document.getElementById(id);
+            if (alvo) {
+                alvo.classList.add('ativa');
+                alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            if (id === 'configuracoes') {
+                document.getElementById('regrasTimeContainer').classList.add('oculto');
+                document.getElementById('textoVagas').classList.add('oculto');
+                document.getElementById('secaoSecreta').classList.add('oculto');
+                document.getElementById('etapaVaga').classList.add('oculto');
+                document.getElementById('etapaPeneira').classList.add('oculto');
+                document.getElementById('etapaContrato').classList.add('oculto');
+            }
+        }
+
+        // ============================================================
+        // 2. MODO ESCURO
+        // ============================================================
+        const darkCheck = document.getElementById('modoEscuro');
+        darkCheck.addEventListener('change', function() {
+            document.body.classList.toggle('dark', this.checked);
+        });
+
+        // ============================================================
+        // 3. LOGIN e CRIAR CONTA
+        // ============================================================
+        const btnLogin = document.getElementById('btnLogin');
+        const btnLogout = document.getElementById('btnLogout');
+        const statusLogin = document.getElementById('statusLogin');
+        const statusCriar = document.getElementById('statusCriarConta');
+        const usuarioHeader = document.getElementById('usuarioHeader');
+
+        // Verificar se já está logado
+        function verificarLogin() {
+            const user = localStorage.getItem('tarzan_user');
+            if (user) {
+                const dados = JSON.parse(user);
+                usuarioHeader.textContent = '👋 ' + dados.email;
+                btnLogin.style.display = 'none';
+                btnLogout.style.display = 'inline-block';
+                statusLogin.textContent = '✅ Logado como: ' + dados.email;
+                statusLogin.style.color = '#00cc00';
+                return true;
+            }
+            return false;
+        }
+
+        // LOGIN
+        btnLogin.addEventListener('click', function() {
+            const email = document.getElementById('emailLogin').value.trim();
+            const senha = document.getElementById('senhaLogin').value.trim();
+
+            if (!email || !senha) {
+                statusLogin.textContent = '❌ Preencha e-mail e senha.';
+                statusLogin.style.color = '#ff4444';
+                return;
+            }
+
+            // Verificar se conta existe
+            const contas = JSON.parse(localStorage.getItem('tarzan_contas') || '{}');
+            if (!contas[email]) {
+                statusLogin.textContent = '❌ Conta não encontrada. Crie uma conta primeiro.';
+                statusLogin.style.color = '#ff4444';
+                return;
+            }
+
+            if (contas[email] !== senha) {
+                statusLogin.textContent = '❌ Senha incorreta.';
+                statusLogin.style.color = '#ff4444';
+                return;
+            }
+
+            localStorage.setItem('tarzan_user', JSON.stringify({ email, logado: true }));
+            usuarioHeader.textContent = '👋 ' + email;
+            btnLogin.style.display = 'none';
+            btnLogout.style.display = 'inline-block';
+            statusLogin.textContent = '✅ Login realizado com sucesso!';
+            statusLogin.style.color = '#00cc00';
+
+            document.getElementById('emailLogin').value = '';
+            document.getElementById('senhaLogin').value = '';
+        });
+
+        // CRIAR CONTA
+        document.getElementById('btnCriarConta').addEventListener('click', function() {
+            const email = document.getElementById('emailCriar').value.trim();
+            const senha = document.getElementById('senhaCriar').value.trim();
+            const confirm = document.getElementById('senhaCriarConfirm').value.trim();
+
+            if (!email || !senha || !confirm) {
+                statusCriar.textContent = '❌ Preencha todos os campos.';
+                statusCriar.style.color = '#ff4444';
+                return;
+            }
+
+            if (senha !== confirm) {
+                statusCriar.textContent = '❌ As senhas não coincidem.';
+                statusCriar.style.color = '#ff4444';
+                return;
+            }
+
+            const contas = JSON.parse(localStorage.getItem('tarzan_contas') || '{}');
+            if (contas[email]) {
+                statusCriar.textContent = '❌ Este e-mail já está cadastrado.';
+                statusCriar.style.color = '#ff4444';
+                return;
+            }
+
+            contas[email] = senha;
+            localStorage.setItem('tarzan_contas', JSON.stringify(contas));
+
+            statusCriar.textContent = '✅ Conta criada com sucesso! Faça login.';
+            statusCriar.style.color = '#00cc00';
+
+            document.getElementById('emailCriar').value = '';
+            document.getElementById('senhaCriar').value = '';
+            document.getElementById('senhaCriarConfirm').value = '';
+        });
+
+        // LOGOUT
+        btnLogout.addEventListener('click', function() {
+            localStorage.removeItem('tarzan_user');
+            usuarioHeader.textContent = '';
+            btnLogin.style.display = 'inline-block';
+            btnLogout.style.display = 'none';
+            statusLogin.textContent = '🔓 Deslogado.';
+            statusLogin.style.color = '#ffaa00';
+        });
+
+        verificarLogin();
+
+        // ============================================================
+        // 4. CONTATO (EMAILJS)
+        // ============================================================
+        document.getElementById('btnEnviarContato').addEventListener('click', function() {
+            const nome = document.getElementById('contatoNome').value.trim() || 'Anônimo';
+            const email = document.getElementById('contatoEmail').value.trim() || 'sem@email.com';
+            const msg = document.getElementById('contatoMsg').value.trim();
+
+            if (!msg) {
+                document.getElementById('statusContato').textContent = '❌ Escreva uma mensagem.';
+                document.getElementById('statusContato').style.color = '#ff4444';
+                return;
+            }
+
+            const templateParams = {
+                title: 'Contato/Suporte - Tarzan FC',
+                name: nome + ' (' + email + ')',
+                message: msg
+            };
+
+            emailjs.send('service_aghhy0c', 'template_4n9je15', templateParams)
+                .then(function(response) {
+                    document.getElementById('statusContato').textContent = '✅ Mensagem enviada com sucesso!';
+                    document.getElementById('statusContato').style.color = '#00cc00';
+                    document.getElementById('contatoNome').value = '';
+                    document.getElementById('contatoEmail').value = '';
+                    document.getElementById('contatoMsg').value = '';
+                })
+                .catch(function(error) {
+                    document.getElementById('statusContato').textContent = '❌ Erro ao enviar. Tente novamente.';
+                    document.getElementById('statusContato').style.color = '#ff4444';
+                    console.error(error);
+                });
+        });
+
+        // ============================================================
+        // 5. INGRESSOS (COMPRA)
+        // ============================================================
+        let pagamentoSelecionado = null;
+        let audioGravado = false;
+        let segundosGravados = 0;
+
+        document.getElementById('btnComprarIngresso').addEventListener('click', function() {
+            document.getElementById('areaCompra').classList.remove('oculto');
+        });
+
+        document.querySelectorAll('[data-pagamento]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tipo = this.dataset.pagamento;
+                const detalhe = document.getElementById('pagamentoDetalhe');
+                detalhe.innerHTML = '';
+
+                if (tipo === 'flamengo') {
+                    detalhe.innerHTML = `
+                        <p>Grave você gritando "FLAMENGO" por 20 segundos:</p>
+                        <button class="btn btn-sec" id="btnGravarAudio">🎤 Gravar (20s)</button>
+                        <button class="btn" id="btnConfirmarAudio" disabled>Confirmar áudio</button>
+                        <p id="statusAudio"></p>
+                    `;
+
+                    let gravando = false;
+                    let timer = null;
+                    let segundos = 0;
+                    const statusAudio = document.getElementById('statusAudio');
+                    const btnGravar = document.getElementById('btnGravarAudio');
+                    const btnConfirmar = document.getElementById('btnConfirmarAudio');
+
+                    btnGravar.addEventListener('click', function() {
+                        if (gravando) return;
+                        gravando = true;
+                        segundos = 0;
+                        statusAudio.textContent = 'Gravando... 0s';
+                        statusAudio.style.color = '#ffaa00';
+
+                        timer = setInterval(() => {
+                            segundos++;
+                            statusAudio.textContent = `Gravando... ${segundos}s`;
+                            if (segundos >= 20) {
+                                clearInterval(timer);
+                                gravando = false;
+                                statusAudio.textContent = '✅ Gravação concluída! (simulada)';
+                                statusAudio.style.color = '#00cc00';
+                                btnConfirmar.disabled = false;
+                                audioGravado = true;
+                                segundosGravados = segundos;
+                            }
+                        }, 1000);
+                    });
+
+                    btnConfirmar.addEventListener('click', function() {
+                        if (!audioGravado || segundosGravados < 20) {
+                            statusAudio.textContent = '❌ Você precisa gravar pelo menos 20 segundos.';
+                            statusAudio.style.color = '#ff4444';
+                            return;
+                        }
+                        statusAudio.textContent = '✅ Áudio validado!';
+                        statusAudio.style.color = '#00cc00';
+                        pagamentoSelecionado = 'flamengo (áudio)';
+                        finalizarCompra('flamengo');
+                    });
+
+                } else if (tipo === 'balinha') {
+                    detalhe.innerHTML = `
+                        <p>Escolha sua balinha:</p>
+                        <select id="tipoBalinha">
+                            <option value="menta">Menta</option>
+                            <option value="morango">Morango</option>
+                            <option value="limao">Limão</option>
+                            <option value="coco">Coco</option>
+                        </select>
+                        <button class="btn" id="btnConfirmarBalinha">Confirmar balinha</button>
+                    `;
+
+                    document.getElementById('btnConfirmarBalinha').addEventListener('click', function() {
+                        const balinha = document.getElementById('tipoBalinha').value;
+                        pagamentoSelecionado = 'balinha: ' + balinha;
+                        finalizarCompra('balinha');
+                    });
+                }
+            });
+        });
+
+        function finalizarCompra(tipo) {
+            const nome = document.getElementById('nomeComprador').value.trim() || 'Anônimo';
+            const detalhe = document.getElementById('pagamentoDetalhe');
+            const statusCompra = document.getElementById('statusCompra');
+
+            let mensagem = `Compra de ingresso por ${nome}. Pagamento: ${pagamentoSelecionado}`;
+
+            const templateParams = {
+                title: 'Nova Compra! - Tarzan FC',
+                name: nome,
+                message: mensagem
+            };
+
+            emailjs.send('service_aghhy0c', 'template_4n9je15', templateParams)
+                .then(function(response) {
+                    statusCompra.textContent = '✅ Compra finalizada! Ingresso enviado para seu e-mail.';
+                    statusCompra.style.color = '#00cc00';
+                    detalhe.innerHTML = '<p>🎫 Ingresso confirmado!</p>';
+                })
+                .catch(function(error) {
+                    statusCompra.textContent = '❌ Erro ao processar compra. Tente novamente.';
+                    statusCompra.style.color = '#ff4444';
+                    console.error(error);
+                });
+        }
+
+        // ============================================================
+        // 6. REGRAS DO TIME → VAGAS → CAMINHO SECRETO
+        // ============================================================
+        document.getElementById('btnRegrasTime').addEventListener('click', function() {
+            const container = document.getElementById('regrasTimeContainer');
+            container.classList.toggle('oculto');
+            if (!container.classList.contains('oculto')) {
+                document.getElementById('textoVagas').classList.add('oculto');
+                document.getElementById('secaoSecreta').classList.add('oculto');
+                document.getElementById('etapaVaga').classList.add('oculto');
+                document.getElementById('etapaPeneira').classList.add('oculto');
+                document.getElementById('etapaContrato').classList.add('oculto');
+            }
+        });
+
+        document.getElementById('btnSaibaMaisVagas').addEventListener('click', function() {
+            document.getElementById('textoVagas').classList.remove('oculto');
+            document.getElementById('textoVagas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.getElementById('btnTerVaga').addEventListener('click', function() {
+            const user = localStorage.getItem('tarzan_user');
+            if (!user) {
+                alert('⚠️ Você precisa estar logado para acessar as vagas!');
+                mostrarSecao('login');
+                return;
+            }
+            document.getElementById('secaoSecreta').classList.remove('oculto');
+            document.getElementById('secaoSecreta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.getElementById('btnQuero').addEventListener('click', function() {
+            document.getElementById('etapaVaga').classList.remove('oculto');
+            document.getElementById('etapaVaga').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.querySelectorAll('[data-vaga]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const vaga = this.dataset.vaga;
+                localStorage.setItem('vaga_selecionada', vaga);
+                document.getElementById('etapaPeneira').classList.remove('oculto');
+                document.getElementById('etapaPeneira').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        document.getElementById('btnProximoContrato').addEventListener('click', function() {
+            const vaga = localStorage.getItem('vaga_selecionada') || 'atacante';
+            mostrarContrato(vaga);
+            document.getElementById('etapaContrato').classList.remove('oculto');
+            document.getElementById('etapaContrato').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // ============================================================
+        // 7. CONTRATOS
+        // ============================================================
+        function mostrarContrato(vaga) {
+            const contratos = {
+                goleiro: `CONTRATO DE GOLEIRO - TARZAN F.C.
+
+        PREÂMBULO
+        DE UM LADO, TEMOS O TIME TARZAN F.C.
+        E DE OUTRO, TEMOS VOCÊ, JOGADOR DE NOME [NOME],
+        DORAVANTE DENOMINADO GOLEIRO.
+
+        CLÁUSULA 1 - DO SERVIÇO PRESTADO
+        O GOLEIRO ACEITA TRABALHAR COMO GOLEIRO, IMPEDINDO GOLS.
+
+        CLÁUSULA 2 - DOS DIREITOS DO TIME
+        O TIME PODE VENDER O GOLEIRO OU RESCINDIR POR JUSTA CAUSA.
+
+        CLÁUSULA 3 - DOS DIREITOS DO GOLEIRO
+        O GOLEIRO PODE OPTAR POR NÃO PARTICIPAR DE TORNEIOS.
+        MULTA RESCISÓRIA: R$ 0,00.
+
+        SALÁRIO: UMA COXINHA E UMA COCA.
+
+        ASSINATURA: ___________________`,
+                atacante: `CONTRATO DE ATACANTE - TARZAN F.C.
+
+        PREÂMBULO
+        DE UM LADO, TEMOS O TIME TARZAN F.C.
+        E DE OUTRO, TEMOS VOCÊ, JOGADOR DE NOME [NOME],
+        DORAVANTE DENOMINADO ATACANTE.
+
+        CLÁUSULA 1 - DO SERVIÇO PRESTADO
+        O ATACANTE ACEITA MARCAR GOLS NO TIME ADVERSÁRIO.
+
+        CLÁUSULA 6 - DO SALÁRIO
+        O SALÁRIO SERÁ UMA COXINHA E UMA COCA.
+
+        CLÁUSULA 7 - DA MULTA RESCISÓRIA
+        MULTA: R$ 0,00.
+
+        ASSINATURA: ___________________`,
+                zagueiro: `CONTRATO DE ZAGUEIRO - TARZAN F.C.
+
+        PREÂMBULO
+        DE UM LADO, TEMOS O TIME TARZAN F.C.
+        E DE OUTRO, TEMOS VOCÊ, JOGADOR DE NOME [NOME],
+        DORAVANTE DENOMINADO ZAGUEIRO.
+
+        CLÁUSULA 1 - DO SERVIÇO PRESTADO
+        O ZAGUEIRO ACEITA DEFENDER E IMPEDIR GOLS.
+
+        SALÁRIO: UMA COXINHA E UMA COCA.
+
+        MULTA RESCISÓRIA: R$ 0,00.
+
+        ASSINATURA: ___________________`,
+                treinador: `CONTRATO DE TREINADOR - TARZAN F.C.
+
+        PREÂMBULO
+        DE UM LADO, TEMOS O TIME TARZAN F.C.
+        E DE OUTRO, TEMOS VOCÊ, TREINADOR DE NOME [NOME],
+        DORAVANTE DENOMINADO TREINADOR.
+
+        CLÁUSULA 1 - DO SERVIÇO PRESTADO
+        O TREINADOR ACEITA TREINAR O TIME.
+
+        SALÁRIO: DUAS COXINHAS E DUAS COCAS (O DOBRO).
+
+        MULTA RESCISÓRIA: R$ 0,00.
+
+        ASSINATURA: ___________________`
+            };
+
+            const texto = contratos[vaga] || contratos.atacante;
+            document.getElementById('contratoExibicao').textContent = texto;
+        }
+
+        // ============================================================
+        // 8. ASSINAR CONTRATO (EMAILJS)
+        // ============================================================
+        document.getElementById('btnAssinarContrato').addEventListener('click', function() {
+            const user = localStorage.getItem('tarzan_user');
+            const vaga = localStorage.getItem('vaga_selecionada') || 'atacante';
+            const nome = user ? JSON.parse(user).email : 'Anônimo';
+
+            const templateParams = {
+                title: 'Novo contrato assinado! - Tarzan FC',
+                name: nome,
+                message: `O jogador ${nome} assinou contrato como ${vaga}. Salário: uma coxinha e uma coca.`
+            };
+
+            emailjs.send('service_aghhy0c', 'template_4n9je15', templateParams)
+                .then(function(response) {
+                    document.getElementById('statusContrato').textContent = '✅ Contrato assinado com sucesso! Bem-vindo ao Tarzan FC! 🦍⚽';
+                    document.getElementById('statusContrato').style.color = '#00cc00';
+                })
+                .catch(function(error) {
+                    document.getElementById('statusContrato').textContent = '❌ Erro ao assinar contrato. Tente novamente.';
+                    document.getElementById('statusContrato').style.color = '#ff4444';
+                    console.error(error);
+                });
+        });
+
+        // ============================================================
+        // 9. NEWSLETTER
+        // ============================================================
+        document.getElementById('btnNews').addEventListener('click', function() {
+            const email = document.getElementById('emailNews').value.trim();
+            if (!email) {
+                alert('Digite seu e-mail.');
+                return;
+            }
+            alert('✅ Inscrição realizada com sucesso!');
+            document.getElementById('emailNews').value = '';
+        });
+
+        console.log('🚀 Tarzan F.C. - Site completo carregado!');
+    </script>
+</body>
+</html>
